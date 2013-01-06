@@ -54,7 +54,7 @@ public class Event
 		String topic = c.getProperty(MQ_TOPIC_EVENTS_KEY);
 		String routingKey = eventType.toString();
 
-		bus.emitMessage(topic, msg, routingKey);
+		bus.emitEvent(msg, routingKey);
 
 		Log.getLogger(this.getClass()).info("Sent '" + routingKey + "':'" + message + "'");
 	}
