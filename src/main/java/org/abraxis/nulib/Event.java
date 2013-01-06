@@ -3,6 +3,7 @@ package org.abraxis.nulib;
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 import org.slf4j.Logger;
+
 import java.io.IOException;
 
 public class Event
@@ -37,11 +38,11 @@ public class Event
 	public static Event fromJSON(String json)
 	{
 		Event event = null;
-        try {
-            event = (Event) JsonReader.jsonToJava(json);
-        } catch (IOException ex) {
-            Log.getLogger(Event.class).error("Error while trying to deserialize Event from JSON", ex);
-        }
+		try {
+			event = (Event) JsonReader.jsonToJava(json);
+		} catch (IOException ex) {
+			Log.getLogger(Event.class).error("Error while trying to deserialize Event from JSON", ex);
+		}
 		return event;
 	}
 

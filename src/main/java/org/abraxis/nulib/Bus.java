@@ -1,16 +1,15 @@
 package org.abraxis.nulib;
 
-import java.io.IOException;
-
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.QueueingConsumer;
-import com.rabbitmq.client.QueueingConsumer.Delivery;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.AMQP.BasicProperties.Builder;
-
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.QueueingConsumer.Delivery;
 import org.slf4j.Logger;
+
+import java.io.IOException;
 
 public class Bus
 {
@@ -68,7 +67,7 @@ public class Bus
 	public QueueingConsumer subscribeToEvents() throws IOException
 	{
 		String[] bindingKeys = {"#"};
-	    return subscribeToEvents(bindingKeys);
+		return subscribeToEvents(bindingKeys);
 	}
 
 	public String simpleGetEvent() throws IOException, InterruptedException

@@ -2,7 +2,6 @@ package org.abraxis.nulib;
 
 import com.rabbitmq.client.QueueingConsumer;
 import org.junit.Test;
-import sun.security.pkcs11.wrapper.CK_SSL3_KEY_MAT_OUT;
 
 public class BusTest
 {
@@ -38,9 +37,9 @@ public class BusTest
 					msgRec = busRecv.simpleGetEvent();
 				} catch (Exception e) {
 					e.printStackTrace();
-					assert(false);
+					assert (false);
 				}
-				assert(msg.equals(msgRec));
+				assert (msg.equals(msgRec));
 			}
 		};
 
@@ -68,9 +67,9 @@ public class BusTest
 					msgRec = busRecv.simpleGetEvent();
 				} catch (Exception e) {
 					e.printStackTrace();
-					assert(false);
+					assert (false);
 				}
-				assert(msg.equals(msgRec));
+				assert (msg.equals(msgRec));
 			}
 		};
 
@@ -103,21 +102,21 @@ public class BusTest
 				try {
 					QueueingConsumer consumer = busRecv.subscribeToRPC(new String[]{service});
 					QueueingConsumer.Delivery delivery = busRecv.getRPCRequest(consumer);
-					assert(delivery != null);
-					assert(delivery.getBody() != null);
+					assert (delivery != null);
+					assert (delivery.getBody() != null);
 					body = new String(delivery.getBody());
-					assert(!body.isEmpty());
+					assert (!body.isEmpty());
 					String reply = body + body;
 					busRecv.sendRPCReply(
 							reply,
 							delivery.getProperties().getCorrelationId(),
 							delivery.getProperties().getReplyTo()
-							);
+					);
 				} catch (Exception e) {
 					e.printStackTrace();
-					assert(false);
+					assert (false);
 				}
-				assert(request.equals(body));
+				assert (request.equals(body));
 			}
 		};
 
@@ -127,6 +126,6 @@ public class BusTest
 		Thread.sleep(1000);     // To make sure that subscriber is registered
 		String reply = busSend.callRPC(service, request);
 		th.join();
-		assert(expectedReply.equals(reply));
+		assert (expectedReply.equals(reply));
 	}
 }
