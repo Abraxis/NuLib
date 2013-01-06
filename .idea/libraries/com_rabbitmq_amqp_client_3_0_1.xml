@@ -4,7 +4,11 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/amqp-client-3.0.1.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/amqp-client-3.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/amqp-client-3.0.1-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

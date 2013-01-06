@@ -1,10 +1,14 @@
 package org.abraxis.nulib;
 
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
+import org.slf4j.Logger;
 import java.io.IOException;
 
 public class Event
 {
 	public static final String MQ_TOPIC_EVENTS_KEY = "mq.topic_events";
+	private Logger logger = Log.getLogger(this.getClass());
 	private EventType eventType;
 	private String device;
 	private String message;
@@ -22,22 +26,22 @@ public class Event
 	public String toJSON()
 	{
 		String json = "";
-//        try {
-//            json = JsonWriter.objectToJson(this);
-//        } catch (IOException ex) {
-//            Log.getLogger(Event.class).error("Error while trying to serialize Event to JSON", ex);
-//        }
+		try {
+			json = JsonWriter.objectToJson(this);
+		} catch (IOException ex) {
+			logger.error("Error while trying to serialize Event to JSON", ex);
+		}
 		return json;
 	}
 
 	public static Event fromJSON(String json)
 	{
 		Event event = null;
-//        try {
-//            event = (Event) JsonReader.jsonToJava(json);
-//        } catch (IOException ex) {
-//            Log.getLogger(Event.class).error("Error while trying to deserialize Event from JSON", ex);
-//        }
+        try {
+            event = (Event) JsonReader.jsonToJava(json);
+        } catch (IOException ex) {
+            Log.getLogger(Event.class).error("Error while trying to deserialize Event from JSON", ex);
+        }
 		return event;
 	}
 
