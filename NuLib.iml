@@ -23,7 +23,9 @@
     </orderEntry>
     <orderEntry type="library" name="com.rabbitmq:amqp-client:3.0.1" level="project" />
     <orderEntry type="library" name="commons-configuration:commons-configuration:1.9" level="project" />
-    <orderEntry type="library" name="json-io-2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.felix:felix-parent:1.2.0" level="project" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-core:2.1.2" level="project" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.1.2" level="project" />
   </component>
 </module>
 

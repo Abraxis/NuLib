@@ -10,7 +10,6 @@ public class ConfigTest
 		Config cfg = Config.getInstance();
 		assert (cfg != null);
 		assert (!cfg.getProperty(Bus.MQ_HOST_CONFIG_KEY).isEmpty());
-		assert (!cfg.getProperty(Event.MQ_TOPIC_EVENTS_KEY).isEmpty());
 	}
 
 	@Test

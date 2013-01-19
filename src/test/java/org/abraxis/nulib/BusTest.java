@@ -3,6 +3,8 @@ package org.abraxis.nulib;
 import com.rabbitmq.client.QueueingConsumer;
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
+
 public class BusTest
 {
 	@Test
@@ -25,6 +27,7 @@ public class BusTest
 	public void testGetEvent() throws Exception
 	{
 		final String msg = "msg, unicode: +ěščřžýáíé=úůÄäüöß";
+		final CountDownLatch latch = new CountDownLatch(2);
 
 		Runnable recThread = new Runnable()
 		{
@@ -34,7 +37,9 @@ public class BusTest
 				Bus busRecv = new Bus();
 				String msgRec = null;
 				try {
-					msgRec = busRecv.simpleGetEvent();
+					QueueingConsumer consumer = busRecv.subscribeToEvents();
+					latch.countDown();
+					msgRec = busRecv.getEvent(consumer);
 				} catch (Exception e) {
 					e.printStackTrace();
 					assert (false);
@@ -46,7 +51,7 @@ public class BusTest
 		Thread th = new Thread(recThread);
 		th.start();
 		Bus busSend = new Bus();
-		Thread.sleep(1000);     // To make sure that subscriber is registered
+		latch.await();
 		busSend.emitEvent(msg, "KEY");
 		th.join();
 	}
@@ -55,6 +60,7 @@ public class BusTest
 	public void testGetEvents() throws Exception
 	{
 		final String msg = "msg, unicode: +ěščřžýáíé=úůÄäüöß";
+		final CountDownLatch latch = new CountDownLatch(2);
 
 		Runnable recThread = new Runnable()
 		{
@@ -64,7 +70,9 @@ public class BusTest
 				Bus busRecv = new Bus();
 				String msgRec = null;
 				try {
-					msgRec = busRecv.simpleGetEvent();
+					busRecv.subscribeToEvents();
+					latch.countDown();
+					msgRec = busRecv.getEvent();
 				} catch (Exception e) {
 					e.printStackTrace();
 					assert (false);
@@ -78,7 +86,7 @@ public class BusTest
 		Thread th2 = new Thread(recThread);
 		th2.start();
 		Bus busSend = new Bus();
-		Thread.sleep(1000);     // To make sure that subscribers are registered
+		latch.await();
 		busSend.emitEvent(msg, "KEY");
 		th1.join();
 		th2.join();
@@ -90,6 +98,7 @@ public class BusTest
 		final String request = "msg, unicode: +ěščřžýáíé=úůÄäüöß";
 		final String expectedReply = request + request;
 		final String service = "testService";
+		final CountDownLatch latch = new CountDownLatch(1);
 
 		Runnable recThread = new Runnable()
 		{
@@ -101,6 +110,7 @@ public class BusTest
 				Bus busRecv = new Bus();
 				try {
 					QueueingConsumer consumer = busRecv.subscribeToRPC(new String[]{service});
+					latch.countDown();
 					QueueingConsumer.Delivery delivery = busRecv.getRPCRequest(consumer);
 					assert (delivery != null);
 					assert (delivery.getBody() != null);
@@ -123,7 +133,7 @@ public class BusTest
 		Thread th = new Thread(recThread);
 		th.start();
 		Bus busSend = new Bus();
-		Thread.sleep(1000);     // To make sure that subscriber is registered
+		latch.await();
 		String reply = busSend.callRPC(service, request);
 		th.join();
 		assert (expectedReply.equals(reply));

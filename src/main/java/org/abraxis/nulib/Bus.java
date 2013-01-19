@@ -23,6 +23,7 @@ public class Bus
 
 	private Logger logger = Log.getLogger(this.getClass());
 	private Channel channel;
+	private QueueingConsumer consumer;
 
 	public Bus()
 	{
@@ -70,18 +71,6 @@ public class Bus
 		return subscribeToEvents(bindingKeys);
 	}
 
-	public String simpleGetEvent() throws IOException, InterruptedException
-	{
-		String[] bindingKeys = {"#"};
-		return simpleGetEvent(bindingKeys);
-	}
-
-	private String simpleGetEvent(String[] bindingKeys) throws InterruptedException, IOException
-	{
-		QueueingConsumer consumer = subscribeToEvents(bindingKeys);
-		return getEvent(consumer);
-	}
-
 	public QueueingConsumer subscribeToEvents(String[] bindingKeys) throws IOException
 	{
 		String exchange = Config.getInstance().getProperty(MQ_EXCHANGE_EVENTS_KEY);
@@ -94,7 +83,19 @@ public class Bus
 		QueueingConsumer consumer = new QueueingConsumer(channel);
 		channel.basicConsume(queueName, true, consumer);
 		logger.debug("Returning consumer");
+		if (this.consumer == null) {
+		    this.consumer = consumer;
+		}
 		return consumer;
+	}
+
+	public String getEvent() throws InterruptedException
+	{
+		if (this.consumer == null) {
+			logger.error("Trying to get event w/o creating consumer first!");
+			throw new InternalError("Trying to get event w/o creating consumer first!");
+		}
+		return getEvent(this.consumer);
 	}
 
 	public String getEvent(QueueingConsumer consumer) throws InterruptedException

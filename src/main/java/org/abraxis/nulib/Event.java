@@ -1,17 +1,17 @@
 package org.abraxis.nulib;
 
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 
 public class Event
 {
-	public static final String MQ_TOPIC_EVENTS_KEY = "mq.topic_events";
-	private Logger logger = Log.getLogger(this.getClass());
+	private transient Logger logger = Log.getLogger(this.getClass());
 	private EventType eventType;
 	private String device;
+	private String usbDevice;
 	private String message;
 
 	public Event()
@@ -20,6 +20,7 @@ public class Event
 
 	public Event(EventType eventType)
 	{
+		this();
 		this.eventType = eventType;
 		this.message = "Event type: " + eventType.toString();
 	}
@@ -28,8 +29,10 @@ public class Event
 	{
 		String json = "";
 		try {
-			json = JsonWriter.objectToJson(this);
-		} catch (IOException ex) {
+			ObjectMapper mapper = new ObjectMapper();
+			json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+			logger.debug("Serialized to JSON as: {}", json);
+		} catch (Exception ex) {
 			logger.error("Error while trying to serialize Event to JSON", ex);
 		}
 		return json;
@@ -39,20 +42,21 @@ public class Event
 	{
 		Event event = null;
 		try {
-			event = (Event) JsonReader.jsonToJava(json);
-		} catch (IOException ex) {
+			ObjectMapper mapper = new ObjectMapper();
+			event = mapper.readValue(json, Event.class);
+			Log.getLogger(Event.class).debug("Serialized from JSON: {}", json);
+		} catch (Exception ex) {
 			Log.getLogger(Event.class).error("Error while trying to deserialize Event from JSON", ex);
 		}
 		return event;
 	}
 
-	public void emitEvent() throws IOException
+	public void emit() throws IOException
 	{
 		Bus bus = new Bus();
 		Config c = Config.getInstance();
 
 		String msg = this.toJSON();
-		String topic = c.getProperty(MQ_TOPIC_EVENTS_KEY);
 		String routingKey = eventType.toString();
 
 		bus.emitEvent(msg, routingKey);
@@ -65,13 +69,38 @@ public class Event
 		return eventType;
 	}
 
+	public void setEventType(EventType eventType)
+	{
+		this.eventType = eventType;
+	}
+
 	public String getDevice()
 	{
 		return device;
 	}
 
+	public void setDevice(String device)
+	{
+		this.device = device;
+	}
+
+	public String getUsbDevice()
+	{
+		return usbDevice;
+	}
+
+	public void setUsbDevice(String usbDevice)
+	{
+		this.usbDevice = usbDevice;
+	}
+
 	public String getMessage()
 	{
 		return message;
+	}
+
+	public void setMessage(String message)
+	{
+		this.message = message;
 	}
 }
